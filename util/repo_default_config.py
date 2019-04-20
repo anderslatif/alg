@@ -8,7 +8,7 @@ def repo_default_config():
     # repositoryformatversion = 0: the version of the gitdir format.
     # 0 means the initial format, 1 the same with extensions.
     # alg only accepts 0
-    ret.set("core", "repoistoryformatversion", 0)
+    ret.set("core", "repoistoryformatversion", "0")
     # filemode = false: disable tracking of file mode changes in the work tree.
     ret.set("core", "filemode", "false")
     # bare = false: indicates that this repository has a worktree.

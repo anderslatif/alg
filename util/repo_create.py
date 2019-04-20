@@ -3,6 +3,7 @@
 import os
 
 from objects.GitRepository import GitRepository
+from util.repo_default_config import repo_default_config
 from util.repo_dir import repo_dir
 from util.repo_file import repo_file
 
