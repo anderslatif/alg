@@ -1,7 +1,7 @@
-# Same as repo-path but mkdir *path wil be absent if mkdir is "" (empty)
+# Same as repo_handling-path but mkdir *path wil be absent if mkdir is "" (empty)
 import os
 
-from util.repo_path import repo_path
+from util.repo_handling.repo_path import repo_path
 
 
 def repo_dir(repo, *path, mkdir):

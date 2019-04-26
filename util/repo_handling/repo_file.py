@@ -3,8 +3,8 @@
 # -------
 # For example, repo_file(r, \"refs\" \"remotes\", \"origin\", \"HEAD\") will create
 # .git/refs/remotes/origin."""
-from util.repo_dir import repo_dir
-from util.repo_path import repo_path
+from util.repo_handling.repo_dir import repo_dir
+from util.repo_handling.repo_path import repo_path
 
 def repo_file(repo, *path, mkdir=False):
     if repo_dir(repo, *path[:-1], mkdir=mkdir):

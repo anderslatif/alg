@@ -1,7 +1,7 @@
 import os
 import configparser
 
-from util.repo_file import repo_file
+from util.repo_handling.repo_file import repo_file
 
 
 class GitRepository(object):
