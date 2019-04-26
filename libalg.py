@@ -101,8 +101,8 @@ def object_hash(fileDestination, format, repo=None):
 
     # Choosing constructor depending on object type found in header
     if   format==b'commit' : obj = GitCommit(repo, data)
-    # elif format==b'tree'   : obj = GitTree(repo, data)
-    # elif format==b'tag'    : obj = GitTag(repo, data)
+    elif format==b'tree'   : obj = GitTree(repo, data)
+    elif format==b'tag'    : obj = GitTag(repo, data)
     elif format==b'blob'    : obj = GitBlob(repo, data)
     else:
         raise Exception("Unknown type %s" % format)
