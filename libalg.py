@@ -37,8 +37,8 @@ def main(argv=sys.argv[1:]):
     # elif args.command == "commit"      : cmd_commit(args)
     elif args.command == "hash-object" : cmd_hash_object(args)
     elif args.command == "init"        : cmd_init(args)
-    # elif args.command == "log"         : cmd_log(args)
-    # elif args.command == "ls-tree"     : cmd_ls_tree(args)
+    elif args.command == "log"         : cmd_log(args)
+    elif args.command == "ls-tree"     : cmd_ls_tree(args)
     # elif args.command == "merge"       : cmd_merge(args)
     # elif args.command == "rebase"      : cmd_rebase(args)
     # elif args.command == "rev-parse"   : cmd_rev_parse(args)
@@ -48,9 +48,9 @@ def main(argv=sys.argv[1:]):
 
 
 # ----------------------------------- INIT -----------------------------------
-argsp = argsubparsers.add_parser("init", help="Initializea a new, empty repository")
+argsparsed = argsubparsers.add_parser("init", help="Initializea a new, empty repository")
 
-argsp.add_argument("path", metavar="directory", nargs="?", default=".", help="Where to create the repistory")
+argsparsed.add_argument("path", metavar="directory", nargs="?", default=".", help="Where to create the repistory")
 
 
 def cmd_init(args):
@@ -62,11 +62,11 @@ def cmd_add(args):
 
 
 # ---------------------------------- CAT FILE ----------------------------------
-argsp = argsubparsers.add_parser("cat-file", help="Provide content of repository object")
+argsparsed = argsubparsers.add_parser("cat-file", help="Provide content of repository object")
 
-argsp.add_argument("type", metavar="type", choices=["blob", "commit", "tag", "tree"], help="Specify the type")
+argsparsed.add_argument("type", metavar="type", choices=["blob", "commit", "tag", "tree"], help="Specify the type")
 
-argsp.add_argument("object", metavar="object", help="The object type to display")
+argsparsed.add_argument("object", metavar="object", help="The object type to display")
 
 def cmd_cat_file(args):
     repo = repo_find()
@@ -78,13 +78,13 @@ def cat_file(repo, obj, format=None):
 
 
 # --------------------------------- HASH-OBJECT --------------------------------
-argsp = argsubparsers.add_parser("hash-object", help="Compute object ID and optionally creates a blob from a file")
+argsparsed = argsubparsers.add_parser("hash-object", help="Compute object ID and optionally creates a blob from a file")
 
-argsp.add_argument("-t", metavar="type", dest="type", choices=["blob", "commit", "tag", "tree"])
+argsparsed.add_argument("-t", metavar="type", dest="type", choices=["blob", "commit", "tag", "tree"])
 
-argsp.add_argument("-w", dest="write", action="store_true", help="Actually write the object into the database")
+argsparsed.add_argument("-w", dest="write", action="store_true", help="Actually write the object into the database")
 
-argsp.add_argument("path", help="Read object from <file>")
+argsparsed.add_argument("path", help="Read object from <file>")
 
 def cmd_hash_object(args):
     if args.write:
@@ -110,8 +110,8 @@ def object_hash(fileDestination, format, repo=None):
     return object_write(obj, repo)
 
 # -------------------------------------- LOG -------------------------------------
-argsp = argsubparsers.add_parser("log", help="Display history of a given commit")
-argsp.add_argument("commit", default="HEAD", nargs="?", help="Commit to start at.")
+argsparsed = argsubparsers.add_parser("log", help="Display history of a given commit")
+argsparsed.add_argument("commit", default="HEAD", nargs="?", help="Commit to start at")
 
 def cmd_log(args):
     repo = repo_find()
@@ -121,7 +121,6 @@ def cmd_log(args):
     print("}")
 
 def log_graphviz(repo, sha, seen):
-
     if sha in seen:
         return
     seen.add(sha)
@@ -143,4 +142,17 @@ def log_graphviz(repo, sha, seen):
         print ("c_{0} -> c_{1};".format(sha, parent))
         log_graphviz(repo, parent, seen)
 
+# ------------------------------------ LS-TREE -----------------------------------
 
+argsparsed = argsubparsers.add_parser("ls-tree", help="Pretty-print a tree object")
+argsparsed.add_argument("object", help="The object to show")
+
+def cmd_ls_tree(args):
+    repo = repo_find()
+    object = object_read(repo, object_find(repo, args.object, format=b'tree'))
+
+    for item in object.items:
+        print("{0} {1} {2}\t{3}".format(
+            "0" * (6 - len(item.mode)) + item.mode.decode("ascii"),
+
+        ))
