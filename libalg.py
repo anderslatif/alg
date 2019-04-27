@@ -1,4 +1,5 @@
 # To access the commandline args
+import os
 import sys
 # https://docs.python.org/3/library/argparse.html
 import argparse
@@ -11,10 +12,11 @@ import argparse
 
 # object imports
 from objects.GitRepository import GitRepository
-
-# util helper function imports
 from objects.git_objects.GitBlob import GitBlob
 from objects.git_objects.GitCommit import GitCommit
+
+# util helper function imports
+from util.commit_handling.tree_checkout import tree_checkout
 from util.object_handling.object_find import object_find
 from util.object_handling.object_read import object_read
 from util.object_handling.object_write import object_write
@@ -33,7 +35,7 @@ def main(argv=sys.argv[1:]):
     if args.command == "add":
         cmd_add(args)
     elif args.command == "cat-file"    : cmd_cat_file(args)
-    # elif args.command == "checkout"    : cmd_checkout(args)
+    elif args.command == "checkout"    : cmd_checkout(args)
     # elif args.command == "commit"      : cmd_commit(args)
     elif args.command == "hash-object" : cmd_hash_object(args)
     elif args.command == "init"        : cmd_init(args)
@@ -159,3 +161,31 @@ def cmd_ls_tree(args):
             item.sha,
             item.path.decode("ascii")
         ))
+
+# ------------------------------------ CHECKOUT -----------------------------------
+
+argsparsed = argsubparsers.add_parser("checkout", help="checkout a commit inside of a directory")
+
+argsparsed.add_argument("commit", help="The commit or tree to checkout")
+
+argsparsed.add_argument("path", help="The EMPTY directory to checkout on")
+
+def cmd_checkout(args):
+    repo = repo_find()
+
+    object = object_read(repo, object_find(repo, args.commit))
+
+    # If the object is a commit, then grab its tree
+    if object.fmt == b'commit':
+        object = object_read(repo, object.commit_or_parse[b'tree'].decode("ascii"))
+
+        # Verify that the path is an empty directory
+        if os.path.exists(args.path):
+            if not os.path.isdir(args.path):
+                raise Exception("Not a directory {0}!".format(args.path))
+            if os.listdir(args.path):
+                raise Exception("Not empty {0}!".format(args.path))
+    else:
+        os.makedirs(args.path)
+
+    tree_checkout(repo, object, os.path.realpath(args.path).encode())
