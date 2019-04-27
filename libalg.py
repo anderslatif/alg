@@ -154,5 +154,8 @@ def cmd_ls_tree(args):
     for item in object.items:
         print("{0} {1} {2}\t{3}".format(
             "0" * (6 - len(item.mode)) + item.mode.decode("ascii"),
-
+            # Git's ls-tree displays the type of the object pointed to
+            object_read(repo, item.sha).fmt.decode("ascii"),
+            item.sha,
+            item.path.decode("ascii")
         ))
