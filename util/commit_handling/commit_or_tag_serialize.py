@@ -17,4 +17,4 @@ def commit_or_tag_serialize(commit_or_tag):
         # Append message
         result += b'\n' + commit_or_tag[b'']
 
-        return result;
+        return result

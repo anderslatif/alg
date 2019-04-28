@@ -20,10 +20,11 @@ from util.commit_handling.tree_checkout import tree_checkout
 from util.object_handling.object_find import object_find
 from util.object_handling.object_read import object_read
 from util.object_handling.object_write import object_write
+from util.ref_handling.ref_lister import ref_lister
 from util.repo_handling.repo_create import repo_create
 from util.repo_handling.repo_find import repo_find
 
-argparser = argparse.ArgumentParser(description="Anders Latif's own git implementation")
+argparser = argparse.ArgumentParser(description="ALG: Anders Latif's own git implementation")
 
 argsubparsers = argparser.add_subparsers(title="Commands", dest="command")
 argsubparsers.required = True
@@ -45,7 +46,7 @@ def main(argv=sys.argv[1:]):
     # elif args.command == "rebase"      : cmd_rebase(args)
     # elif args.command == "rev-parse"   : cmd_rev_parse(args)
     # elif args.command == "rm"          : cmd_rm(args)
-    # elif args.command == "show-ref"    : cmd_show_ref(args)
+    elif args.command == "show-ref"    : cmd_show_ref(args)
     # elif args.command == "tag"         : cmd_tag(args)
 
 
@@ -189,3 +190,27 @@ def cmd_checkout(args):
         os.makedirs(args.path)
 
     tree_checkout(repo, object, os.path.realpath(args.path).encode())
+
+# ------------------------------------ SHOW-REFS ----------------------------------
+
+argsparsed = argsubparsers.add_parser("show-ref", help="List references")
+
+def cmd_show_ref(args):
+    repo = repo_find()
+    refs = ref_lister(repo)
+    show_ref(repo, refs, prefix="refs")
+
+def show_ref(repo, refs, with_hash=True, prefix=""):
+    for key, value in refs.items():
+        if type(value) == str:
+            print("{0}{1}{2}".format(
+                value + " " if with_hash else "",
+                prefix + "/" if prefix else "",
+                key
+            ))
+        else:
+            show_ref(repo, value, with_hash=with_hash, prefix="{0}{1}{2}".format(
+                                                                                prefix,
+                                                                                "/" if prefix else "",
+                                                                                key
+                                                                            ))
