@@ -12,6 +12,9 @@ import argparse
 
 # object imports
 from objects.GitRepository import GitRepository
+from objects.GitTag import GitTag
+
+from objects.GitTree import GitTree
 from objects.git_objects.GitBlob import GitBlob
 from objects.git_objects.GitCommit import GitCommit
 
@@ -44,10 +47,10 @@ def main(argv=sys.argv[1:]):
     elif args.command == "ls-tree"     : cmd_ls_tree(args)
     # elif args.command == "merge"       : cmd_merge(args)
     # elif args.command == "rebase"      : cmd_rebase(args)
-    # elif args.command == "rev-parse"   : cmd_rev_parse(args)
+    elif args.command == "rev-parse"   : cmd_rev_parse(args)
     # elif args.command == "rm"          : cmd_rm(args)
     elif args.command == "show-ref"    : cmd_show_ref(args)
-    # elif args.command == "tag"         : cmd_tag(args)
+    elif args.command == "tag"         : cmd_tag(args)
 
 
 # ----------------------------------- INIT -----------------------------------
@@ -214,3 +217,45 @@ def show_ref(repo, refs, with_hash=True, prefix=""):
                                                                                 "/" if prefix else "",
                                                                                 key
                                                                             ))
+# ---------------------------------------- TAG --------------------------------------
+
+# git tag                   - Lists all
+# git tag NAME [OBJECT]     - Create a lightweight tag
+# git tag -a NAME [OBJECT]  - Create an object tag
+
+argsparsed = argsubparsers.add_parser("tag", help="List and create tags")
+
+argsparsed.add_argument("-a", action="store_true", dest="create_tag_object", help="Creates a tag object")
+
+argsparsed.add_argument("name", nargs="?", help="The new tag's name")
+
+argsparsed.add_argument("object", default="HEAD", nargs="?", help="The object the new tag will point to")
+
+def cmd_tag(args):
+    repo = repo_find()
+
+    if args.name:
+        # todo tag_create(args.name, args.object, type="object" if args.create_tag_object else "ref")
+        pass
+    else:
+        refs = ref_lister(repo)
+        show_ref(repo, refs["tags"], with_hash=False)
+
+# ---------------------------------------- REV-PARSE --------------------------------------
+
+argsparsed = argsubparsers.add_parser("rev-parse", help="Parse revision (or other objects) identifiers")
+
+argsparsed.add_argument("--alg-type", metavar="type", dest="type", choices=["blob", "commit", "tag", "tree"],
+                        default=None, help="Specify the expected type")
+
+argsparsed.add_argument("name", help="The name to parse")
+
+def cmd_rev_parse(args):
+    if args.type:
+        format = args.type.encode()
+
+    repo = repo_find()
+
+    print (object_find(repo, args.name, args.type, follow=True))
+
+

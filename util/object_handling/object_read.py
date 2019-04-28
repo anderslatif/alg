@@ -1,4 +1,8 @@
 # Read object object_id and return a GitObject
+from objects.GitTag import GitTag
+from objects.GitTree import GitTree
+from objects.git_objects.GitBlob import GitBlob
+from objects.git_objects.GitCommit import GitCommit
 from util.repo_handling.repo_file import repo_file
 
 
@@ -10,7 +14,7 @@ def object_read(repo, sha):
 
         # Object type
         x = raw.find(b' ')
-        fmt = raw[0:x]
+        format = raw[0:x]
 
         # Read and validate object size
         y = raw.find(b'\x00', x)
@@ -19,11 +23,11 @@ def object_read(repo, sha):
             raise Exception("Malformed object {0}: bad length".format(sha))
 
         # Pick constructor
-        if   fmt==b'commit' : c=GitCommit
-        elif fmt==b'tree'   : c=GitTree
-        elif fmt==b'tag'    : c=GitTag
-        elif fmt==b'blob'   : c=GitBlob
+        if   format==b'commit' : c=GitCommit
+        elif format==b'tree'   : c=GitTree
+        elif format==b'tag'    : c=GitTag
+        elif format==b'blob'   : c=GitBlob
         else:
-            raise Exception("Unknown type %s for object %s".format(fmt.decode("ascii", sha)))
+            raise Exception("Unknown type %s for object %s".format(format.decode("ascii", sha)))
 
     return c(repo, raw[y+1:])
