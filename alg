@@ -4,4 +4,6 @@
 # python3 alg subcommand flags
 
 import libalg
+
+
 libalg.main()
