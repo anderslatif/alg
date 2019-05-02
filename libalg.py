@@ -1,14 +1,8 @@
-# To access the commandline args
 import os
 import sys
 # https://docs.python.org/3/library/argparse.html
 import argparse
 # Git uses a configuration file format that is basically Microsoft’s INI format. The configparser module can read and write these files.
-# import configparser
-# need to use the SHA-1 function for hashing
-# filesystem abstractions
-# regular expressions
-# zip functionality
 
 # object imports
 from objects.GitRepository import GitRepository
@@ -19,6 +13,7 @@ from objects.git_objects.GitBlob import GitBlob
 from objects.git_objects.GitCommit import GitCommit
 
 # util helper function imports
+from util.ref_handling.tag_create import tag_create
 from util.commit_handling.tree_checkout import tree_checkout
 from util.object_handling.object_find import object_find
 from util.object_handling.object_read import object_read
@@ -231,12 +226,14 @@ argsparsed.add_argument("name", nargs="?", help="The new tag's name")
 
 argsparsed.add_argument("object", default="HEAD", nargs="?", help="The object the new tag will point to")
 
+# todo change the default, consider if I want to parse from git config --list
+argsparsed.add_argument("author", default="Anders Latif <anderslatif@gmail.com>", nargs="?", help="Author of the commit or tag")
+
 def cmd_tag(args):
     repo = repo_find()
 
     if args.name:
-        # todo tag_create(args.name, args.object, type="object" if args.create_tag_object else "ref")
-        pass
+        tag_create(name=args.name, reference=args.object, author=args.author, create_tag_object=args.create_tag_object)
     else:
         refs = ref_lister(repo)
         show_ref(repo, refs["tags"], with_hash=False)
