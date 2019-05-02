@@ -7,7 +7,7 @@ setuptools.setup(
     author_email='anderslatif@gmail.com',
     description='The more stupid GIT',
     packages=setuptools.find_packages(),
-    scripts=['src/libalg.py'],
+    scripts=['alg'],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
