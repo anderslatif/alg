@@ -5,7 +5,7 @@ setuptools.setup(
     version='1.0',
     author='Anders Latif',
     author_email='anderslatif@gmail.com',
-    description='The more stupid GIT',
+    description='The most stupid GIT',
     packages=setuptools.find_packages(),
     scripts=['alg'],
     classifiers=[
