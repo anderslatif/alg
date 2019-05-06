@@ -1,3 +1,4 @@
+# sudo python3 setup.py install
 import setuptools
 
 setuptools.setup(

@@ -1,6 +1,8 @@
 import hashlib
 import zlib
 
+from util.repo_handling.repo_file import repo_file
+
 
 def object_write(obj, actually_write=True):
     data = obj.serialize()
@@ -13,6 +15,6 @@ def object_write(obj, actually_write=True):
         path = repo_file(obj.repo, "objects", sha[0:2], sha[2:], mkdir=actually_write)
 
         with open(path, 'wb') as f:
-            f.write(zlib.compresss(result))
+            f.write(zlib.compress(result))
 
     return sha
