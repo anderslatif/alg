@@ -121,7 +121,6 @@ parser.add_argument("commit", default="HEAD", nargs="?", help="Commit to start a
 
 def cmd_log(args):
     repo = repo_find()
-
     print("diagraph alglog{")
     log_graphviz(repo, object_find(repo, args.commit), set())
     print("}")
@@ -197,7 +196,7 @@ def cmd_checkout(args):
 
     tree_checkout(repo, object, os.path.realpath(args.path).encode())
 
-# ------------------------------------ SHOW-REFS ----------------------------------
+# ------------------------------------ SHOW-REF ----------------------------------
 
 parser = argsubparsers.add_parser("show-ref", help="List references")
 

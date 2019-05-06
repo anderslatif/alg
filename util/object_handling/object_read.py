@@ -1,4 +1,6 @@
 # Read object object_id and return a GitObject
+import zlib
+
 from objects.GitTag import GitTag
 from objects.GitTree import GitTree
 from objects.git_objects.GitBlob import GitBlob

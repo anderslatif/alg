@@ -4,7 +4,7 @@ import os
 from util.repo_handling.repo_path import repo_path
 
 
-def repo_dir(repo, *path, mkdir):
+def repo_dir(repo, *path, mkdir=False):
     path = repo_path(repo, *path)
 
     if os.path.exists(path):
